@@ -94,4 +94,8 @@ class Designer{
     getObjDef(id:string):ObjDef{
         return this.definition.objdefinitions.find(o => o._id == id)
     }
+
+    getDataTypeDef(id:string):DataTypeDef{
+        return this.definition.dataTypes.find(o => o._id == id)
+    }
 }

@@ -8,7 +8,7 @@ class Tabs{
 
     constructor(public designer:Designer,public backrefsAttributes:Attribute[],primarykey:string){
         
-        this.rootelement = string2html(`<div style="margin:10px; padding:10px; border:1px solid black;">
+        this.rootelement = string2html(`<div style="margin-top:10px; padding:10px; border:1px solid black;">
             <div id="tabbuttons"></div>
             <div id="tabcontainer" style="padding:10px; border:1px solid black; margin:10px 0 0 0;"></div>
         </div>`)
@@ -21,8 +21,8 @@ class Tabs{
         for(let attribute of backrefsAttributes){
             let backrefobject = this.designer.getObjDef(attribute.belongsToObject)
             let name = `${backrefobject.name}-${attribute.name}`
-            let button = string2html(`<button>${name}</button>`)
-            this.tabbuttons.insertAdjacentElement('beforeend',button)
+            let button = string2html(`<button style="margin-right:10px;">${name}</button>`)
+            this.tabbuttons.appendChild(button)
             let listview = new ListView(designer,backrefobject)
             this.listviews.push(listview)
             let filter = {}
@@ -46,9 +46,7 @@ class Tabs{
     }
 
     loadView(listview:ListView){
-        while(this.tabcontainer.firstChild){
-            this.tabcontainer.removeChild(this.tabcontainer.firstChild);
-        }
+        emptyhtml(this.tabcontainer)
         this.tabcontainer.appendChild(listview.rootelement)
     }
 }

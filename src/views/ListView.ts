@@ -15,12 +15,13 @@ class ListView{
     titleHeaderElements:Map<string,HTMLElement> = new Map()
     attributes: Attribute[]
     newbuttononclick: () => void
+    dereferences: any[]
+    collectionSize: number
+    prelimitsize: number
 
     constructor(public designer:Designer,public objDefinition:ObjDef){
 
-        //
-        //fetch data using query
-        //create table 
+
 
         this.rootelement = string2html(`
             <div>
@@ -74,7 +75,6 @@ class ListView{
                         }
                         
                         this.setQueryAndReload2(this.getQuery())
-                        // this.refreshTable()
                     })
                     return element
                 },
@@ -87,12 +87,21 @@ class ListView{
                     return filterwidget.rootElement
                 }
             ],(item,i) => {
-                let widget = createWidget(a.dataType,a,this.designer)
-                if(a.dataType == DataType.pointer){
-                    let pointerwidget = widget as PointerWidget
-                    pointerwidget.fillOptions().then(() => {
-                        widget.set(item[a.name])
-                    })
+                
+                let widget = createWidget(this.designer.getDataTypeDef(a.dataType).name,a,this.designer)
+                
+                if(this.designer.getDataTypeDef(a.dataType).name == 'pointer'){
+
+                    if(item[a.name]){
+                        var url = `/${this.designer.getObjDef(a.pointsToObject).name}/${item[a.name]}`
+                        var reffedobjecttype = this.designer.getObjDef(a.pointsToObject)
+                        var displayattribute = this.designer.getAttribute(reffedobjecttype.displayAttribute)
+                        var dereffedobject = this.dereferences[reffedobjecttype.name][item[a.name]]
+                        return string2html(`<span><a href="${url}">${dereffedobject[displayattribute.name]}</a></span>`)//hier moet data uit de derefs opgehaald worden
+                    }else{
+                        return string2html(`<span></span>`)
+                    }
+                    
                 }else{
                     widget.set(item[a.name])
                 }
@@ -111,6 +120,9 @@ class ListView{
 
     refreshTable(){
         getList(this.objDefinition.name,this.getQuery()).then(res => {
+            this.dereferences = res.reffedObjects
+            this.collectionSize = res.collectionSize
+            this.prelimitsize = res.prelimitsize
             this.table.load(res.data)
         })
     }
@@ -119,18 +131,30 @@ class ListView{
         var sort = {}
         sort[this.orderby] = this.orderAsc ? 1 : -1
         var filter = {}
+        var dereferences = []
         for(var attribute of this.attributes){
+            //fill filter
             if(this.filterWidgets.get(attribute._id).get()){
                 filter[attribute.name] = this.filterWidgets.get(attribute._id).get()
             }
+
+            //fill derefs
+            if(this.designer.getDataTypeDef(attribute.dataType).name == 'pointer'){
+                dereferences.push({
+                    attribute:attribute.name,
+                    collection:this.designer.getObjDef(attribute.pointsToObject).name,
+                    dereferences:[],
+                })
+            }
         }
+
         return {
             filter:filter,
             paging:{
                 limit:this.pagesizeelement.valueAsNumber,
                 skip:this.pageskipelement.valueAsNumber,
             },
-            reffedAttributes:[],
+            dereferences:dereferences,
             sort:sort
         }
     }

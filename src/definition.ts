@@ -1,11 +1,16 @@
 function initAppDef(databaseName,objdefinitions:ObjDef[],attributes:Attribute[]):AppDef{
-    return {databaseName,objdefinitions,attributes}
+
+    var datatypes = ['string','date','range','number','pointer','id','boolean']
+    return {databaseName,objdefinitions,attributes,dataTypes:datatypes.map((type,i) => {
+        return {_id:(i + 1).toString(),name:type}
+    })}
 }
 
 type AppDef = {
     databaseName: string,
     objdefinitions:ObjDef[],
     attributes:Attribute[],
+    dataTypes:DataTypeDef[],
 }
 
 function initObjDef(_id,name,displayAttribute,):ObjDef{
@@ -18,42 +23,38 @@ type ObjDef = {
     displayAttribute:string,
 }
 
-type Datatype2 = {
-    _id:string,
-    name:string,
-}
-
-function initAttribute(_id,name,belongsToObject,dataType:DataType,):Attribute{
-    return {_id,name,belongsToObject,dataType}
-}
-
-function initEnumAttribute(_id,name,belongsToObject,dataType:DataType,enumDataTypes:string[]):Attribute{
-    return {_id,name,belongsToObject,dataType,enumDataTypes}
-}
-
-function initPointerAttribute(_id,name,belongsToObject,dataType:DataType,pointsToObject):Attribute{
-    return {_id,name,belongsToObject,dataType,pointsToObject}
-}
-
 type Attribute = {
     _id:string,
     name: string,
     belongsToObject:string,
-    dataType:DataType,
+    dataType:string,
 
     pointsToObject?:string
     enumDataTypes?:string[]
 }
 
+type DataTypeDef = {
+    _id:string,
+    name:string,
+}
+
+function initAttribute(_id,name,belongsToObject,dataType:string,):Attribute{
+    return {_id,name,belongsToObject,dataType}
+}
+
+function initPointerAttribute(_id,name,belongsToObject,dataType:string,pointsToObject):Attribute{
+    return {_id,name,belongsToObject,dataType,pointsToObject}
+}
+
+
 
 enum DataType{
-    string = 'text',
-    date = 'date',
-    range = 'range',
-    number = 'number',
-    pointer = 'pointer',
-    id = 'id',
-    enum = 'enum',
-    boolean = 'boolean'
+    string = '1',
+    date = '2',
+    range = '3',
+    number = '4',
+    pointer = '5',
+    id = '6',
+    boolean = '7'
 }
 

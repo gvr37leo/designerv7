@@ -8,29 +8,26 @@ function addDefaultAttributes(def:AppDef){
     return def
 }
 
-function createWidget(dataType:DataType,attribute:Attribute,designer:Designer){
-    if(dataType == DataType.boolean){
+function createWidget(dataTypename:string,attribute:Attribute,designer:Designer){
+    if(dataTypename == 'boolean'){
         return new BooleanWidget()
     }
-    if(dataType == DataType.date){
+    if(dataTypename == 'date'){
         return new DateWidget()
     }
-    if(dataType == DataType.enum){
-        return new EnumWidget(attribute.enumDataTypes)
-    }
-    if(dataType == DataType.id){
+    if(dataTypename == 'id'){
         return new IdWidget(attribute,designer)
     }
-    if(dataType == DataType.number){
+    if(dataTypename == 'number'){
         return new NumberWidget()
     }
-    if(dataType == DataType.pointer){
+    if(dataTypename == 'pointer'){
         return new PointerWidget(attribute,designer)
     }
-    if(dataType == DataType.range){
+    if(dataTypename == 'range'){
         return new RangeWidget()
     }
-    if(dataType == DataType.string){
+    if(dataTypename == 'string'){
         return new TextWidget()
     }
 }

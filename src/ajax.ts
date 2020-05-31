@@ -18,7 +18,7 @@ function create(objname:string,data:any):Promise<string>{
     })
 }
 
-function getList(objname:string,query:Query):Promise<{collectionSize:number,data:any[]}>{
+function getList(objname:string,query:Query):Promise<QueryResult<any>>{
     return fetch(`/api/search/${objname}`,{
         headers:{
             'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ function get(objname:string, id:string){
                 skip:0,
             },
             sort:{},
-            reffedAttributes:[]
+            dereferences:[]
         }).then(result => {
             resolve(result.data[0])
         })
@@ -94,7 +94,7 @@ type Dereference = {
 type Query = {
     filter:any
     sort:any
-    reffedAttributes:Dereference[]
+    dereferences:Dereference[]
     paging:{
         skip:number
         limit:number
@@ -104,8 +104,8 @@ type Query = {
 type QueryResult<T> = {
     data:T[]
     collectionSize:number
-    dataSize:number
-    reffedObjects:{[k:string]:{[s:string]:any}}
+    prelimitsize:number
+    reffedObjects:any[]
 }
 
 type PostResponse = {

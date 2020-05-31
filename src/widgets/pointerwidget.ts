@@ -29,7 +29,7 @@ class PointerWidget extends Widget{
 
     fillOptions(){
         var object = this.designer.getObjDef(this.attribute.pointsToObject)
-        return getList(object.name,{filter:{},paging:{limit:0,skip:0,},sort:{},reffedAttributes:[]}).then((res) => {
+        return getList(object.name,{filter:{},paging:{limit:0,skip:0,},sort:{},dereferences:[]}).then((res) => {
             this.inputelement.innerHTML = ''
             for(let item of res.data){
                 let displayAttribute = this.designer.getAttribute(object.displayAttribute)
@@ -38,5 +38,4 @@ class PointerWidget extends Widget{
             // this.set(val[attribute.name])
         })
     }
-
 }

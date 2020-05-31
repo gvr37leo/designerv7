@@ -24,6 +24,7 @@ class DetailView{
     widgetcontainer: HTMLElement
     tabscontainer: HTMLElement
     attributes: Attribute[]
+    onMountFinished: EventSystem<unknown>
 
     constructor(public designer:Designer,public definition:ObjDef){
 
@@ -35,7 +36,7 @@ class DetailView{
         //create widgets for attributes
         //create tabs
         //fill tabs with tables
-
+        this.onMountFinished = new EventSystem()
         var idattribute = this.designer.definition.attributes.find(a => a.belongsToObject == this.definition._id && a.dataType==DataType.id && a.name == "_id")
         this.rootelement = string2html(`
             <div>
@@ -77,7 +78,8 @@ class DetailView{
 
         this.attributes = this.designer.definition.attributes.filter(a => a.belongsToObject == this.definition._id)
         for(var attribute of this.attributes){
-            var widget = createWidget(attribute.dataType,attribute,designer)
+           
+            var widget = createWidget(this.designer.getDataTypeDef(attribute.dataType).name,attribute,designer)
             this.widgets.set(attribute._id,widget)
             var widgethull = string2html(`
                 <div>
@@ -99,7 +101,7 @@ class DetailView{
 
             for(let attribute of this.attributes){
                 let widget = this.widgets.get(attribute._id)
-                if(attribute.dataType == DataType.pointer){
+                if(this.designer.getDataTypeDef(attribute.dataType).name == 'pointer'){
                     let pointerwidget = widget as PointerWidget
                     pointerwidget.fillOptions().then(() => {
                         widget.set(val[attribute.name])
@@ -108,10 +110,12 @@ class DetailView{
                     widget.set(val[attribute.name])
                 }
             }
+            this.onMountFinished.trigger(null)
         })
 
+        //hier
+        // tabs overwrite filter
         var backrefs = this.designer.definition.attributes.filter(a => a.pointsToObject == this.definition._id)
-        emptyhtml(this.tabscontainer)
         if(backrefs.length > 0){
             this.tabs = new Tabs(this.designer,backrefs, id)
             this.tabscontainer.appendChild(this.tabs.rootelement)
