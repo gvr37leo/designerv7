@@ -3,7 +3,7 @@
 let objectidcounter = 1
 let objectdefinition = initObjDef((objectidcounter++).toString(),'objdefinitions',null)
 let attributedefinition = initObjDef((objectidcounter++).toString(),'attributes',null)
-let datatypedefinition = initObjDef((objectidcounter++).toString(),'datatypes',null)
+let datatypedefinition = initObjDef((objectidcounter++).toString(),'dataTypes',null)
 
 let datatypeidcounter = 1
 let datatypeid = initAttribute((datatypeidcounter++).toString(),'_id','3',DataType.id)
@@ -29,7 +29,7 @@ datatypedefinition.displayAttribute = datatypename._id
 
 
 
-var selfdef = initAppDef('testdb',[
+var selfdef = initAppDef([
     objectdefinition,
     attributedefinition,
     datatypedefinition,
@@ -48,7 +48,7 @@ var selfdef = initAppDef('testdb',[
     datatypename,
 ])
 
-var persoonbedrijfdef = initAppDef('',[
+var persoonbedrijfdef = initAppDef([
     initObjDef('1','persoon','1'),
     initObjDef('2','bedrijf','6'),
     initObjDef('3','persoonWerktBijBedrijf',null),
@@ -62,7 +62,7 @@ var persoonbedrijfdef = initAppDef('',[
 
     initAttribute('6','name','2',DataType.string),
     initPointerAttribute('7','branch','2',DataType.pointer,'4'),
-    initAttribute('8','rating','2',DataType.number),
+    initAttribute('8','rating','2',DataType.range),
 
     initPointerAttribute('9','werknemer','3',DataType.pointer,'1'),
     initPointerAttribute('10','werkgever','3',DataType.pointer,'2'),
@@ -72,12 +72,19 @@ var persoonbedrijfdef = initAppDef('',[
 ])
 
 
+let globaldesigner:Designer = null
+globaldesigner = new Designer(addDefaultAttributes(persoonbedrijfdef),document.body)
+// loadSelfDefDesigner()
 
-let globaldesigner = new Designer(addDefaultAttributes(persoonbedrijfdef),document.body)
-// let globaldesigner = new Designer(selfdef,document.body)
-var detailView = globaldesigner.getDetailView('1')
-var listView = globaldesigner.getListView('1')//
-listView.table
-detailView.getAttributeWidget('2')
-detailView.getTable('attributeid')
-detailView.getBackRefs('objectid')//returns  ids of pointerattributes that point back to the object belonging to this view
+
+function loadSelfDefDesigner(){
+    var useddef = selfdef
+    globaldesigner = new Designer(useddef as any,document.body)
+    var exportbutton = string2html(`<button>export</button>`)
+    exportbutton.addEventListener('click',() => {
+        exportDB(useddef).then(res => {
+            console.log(JSON.stringify(res))
+        })
+    })
+    globaldesigner.navbarelement.appendChild(exportbutton)
+}

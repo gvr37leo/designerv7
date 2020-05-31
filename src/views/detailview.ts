@@ -4,7 +4,6 @@
 /// <reference path="../widgets/numberwidget.ts" />
 /// <reference path="../widgets/rangewidget.ts" />
 /// <reference path="../widgets/textwidget.ts" />
-/// <reference path="../widgets/enumwidget.ts" />
 /// <reference path="../widgets/pointerwidget.ts" />
 /// <reference path="../widgets/widget.ts" />
 /// <reference path="tabs.ts" />
@@ -13,18 +12,19 @@
 
 class DetailView{
 
-    rootelement:HTMLElement
     widgets:Map<string,Widget> = new Map<string,Widget>()
     tabs:Tabs
-    tables:Table<any>[] = []
+    attributes: Attribute[]
+    backrefs: Attribute[]
+    onMountFinished: EventSystem<unknown>
+    
+    rootelement:HTMLElement
     duplicatebuttonElement: HTMLElement
     savebuttonElement: HTMLElement
     deletebuttonElement: HTMLElement
     upbuttonElement: HTMLElement
     widgetcontainer: HTMLElement
     tabscontainer: HTMLElement
-    attributes: Attribute[]
-    onMountFinished: EventSystem<unknown>
 
     constructor(public designer:Designer,public definition:ObjDef){
 
@@ -61,7 +61,9 @@ class DetailView{
         this.tabscontainer = this.rootelement.querySelector('#tabscontainer')
 
         this.duplicatebuttonElement.addEventListener('click',() => {
-
+            create(this.definition.name,this.getObjectData()).then(id => {
+                this.designer.router.navigate(`/${this.definition.name}/${id}`)
+            })
         })
         this.savebuttonElement.addEventListener('click',() => {
             var data = this.getObjectData()
@@ -93,10 +95,13 @@ class DetailView{
             this.widgetcontainer.appendChild(widgethull)
         }
 
-        
+        this.backrefs = this.designer.definition.attributes.filter(a => a.pointsToObject == this.definition._id)
+        this.tabs = new Tabs(this.designer,this.backrefs)
+        this.tabscontainer.appendChild(this.tabs.rootelement)
     }
 
     mount(id:string){
+        this.tabs.mount(id)
         get(this.definition.name,id).then(val => {
 
             for(let attribute of this.attributes){
@@ -115,24 +120,12 @@ class DetailView{
 
         //hier
         // tabs overwrite filter
-        var backrefs = this.designer.definition.attributes.filter(a => a.pointsToObject == this.definition._id)
-        if(backrefs.length > 0){
-            this.tabs = new Tabs(this.designer,backrefs, id)
-            this.tabscontainer.appendChild(this.tabs.rootelement)
-        }
+        
         
     }
 
     getAttributeWidget(attributeid:string){
         this.widgets.get(attributeid)
-    }
-
-    getTable(attributeid:string){
-
-    }
-
-    getBackRefs(objectid:string){
-        
     }
 
     getObjectData():any{

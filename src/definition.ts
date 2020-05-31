@@ -1,13 +1,12 @@
-function initAppDef(databaseName,objdefinitions:ObjDef[],attributes:Attribute[]):AppDef{
+function initAppDef(objdefinitions:ObjDef[],attributes:Attribute[]):AppDef{
 
     var datatypes = ['string','date','range','number','pointer','id','boolean']
-    return {databaseName,objdefinitions,attributes,dataTypes:datatypes.map((type,i) => {
+    return {objdefinitions,attributes,dataTypes:datatypes.map((type,i) => {
         return {_id:(i + 1).toString(),name:type}
     })}
 }
 
 type AppDef = {
-    databaseName: string,
     objdefinitions:ObjDef[],
     attributes:Attribute[],
     dataTypes:DataTypeDef[],

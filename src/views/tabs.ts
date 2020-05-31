@@ -4,9 +4,11 @@ class Tabs{
     tabs:Map<string,HTMLElement> = new Map()
     tabbuttons: HTMLElement
     tabcontainer: HTMLElement
-    listviews: ListView[]
+    listviews: Map<string,ListView> = new Map()
+    currentprimarykey:string
 
-    constructor(public designer:Designer,public backrefsAttributes:Attribute[],primarykey:string){
+
+    constructor(public designer:Designer,public backrefsAttributes:Attribute[]){
         
         this.rootelement = string2html(`<div style="margin-top:10px; padding:10px; border:1px solid black;">
             <div id="tabbuttons"></div>
@@ -16,23 +18,20 @@ class Tabs{
         this.tabcontainer = this.rootelement.querySelector('#tabcontainer')
 
 
-        this.listviews = []
 
-        for(let attribute of backrefsAttributes){
+        for(let attribute of this.backrefsAttributes){
             let backrefobject = this.designer.getObjDef(attribute.belongsToObject)
             let name = `${backrefobject.name}-${attribute.name}`
             let button = string2html(`<button style="margin-right:10px;">${name}</button>`)
             this.tabbuttons.appendChild(button)
             let listview = new ListView(designer,backrefobject)
-            this.listviews.push(listview)
-            let filter = {}
-            filter[attribute.name] = primarykey
-            listview.setQueryAndReload('createdAt',true,0,0,filter)
+            this.listviews.set(attribute._id,listview)
+            
 
             listview.newbuttonelment.removeEventListener('click',listview.newbuttononclick)
             listview.newbuttonelment.addEventListener('click',() => {
                 let obj = {}
-                obj[attribute.name] = primarykey
+                obj[attribute.name] = this.currentprimarykey
                 create(backrefobject.name,obj).then(id => {
                     this.designer.router.navigate(`/${backrefobject.name}/${id}`)
                 })
@@ -42,7 +41,22 @@ class Tabs{
                 this.loadView(listview)
             })
         }
-        this.loadView(this.listviews[0])
+        var listview = Array.from(this.listviews.values())[0]
+        if(listview){
+            this.loadView(listview)
+        }
+    }
+
+    mount(primarykey:string){
+        this.currentprimarykey = primarykey
+
+        for(let attribute of this.backrefsAttributes){
+            var listview = this.listviews.get(attribute._id)
+            
+            let query = listview.getQuery()
+            query.filter[attribute.name] = this.currentprimarykey
+            listview.setQueryAndReload2(query)
+        }
     }
 
     loadView(listview:ListView){

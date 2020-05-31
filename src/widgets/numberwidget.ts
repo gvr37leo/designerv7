@@ -5,9 +5,9 @@ class NumberWidget extends Widget{
         this.inputelement = this.rootElement as HTMLInputElement
     }
     get() {
-        return this.inputelement.value
+        return this.inputelement.valueAsNumber
     }
     set(val: any) {
-        this.inputelement.value = val
+        this.inputelement.valueAsNumber = val
     }
 }

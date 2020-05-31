@@ -18,6 +18,7 @@ class ListView{
     dereferences: any[]
     collectionSize: number
     prelimitsize: number
+    onRefreshFinished: EventSystem<any> = new EventSystem()
 
     constructor(public designer:Designer,public objDefinition:ObjDef){
 
@@ -124,6 +125,7 @@ class ListView{
             this.collectionSize = res.collectionSize
             this.prelimitsize = res.prelimitsize
             this.table.load(res.data)
+            this.onRefreshFinished.trigger(null)
         })
     }
 

@@ -83,7 +83,7 @@ class Designer{
     }
 
     replaceView(view){
-        this.viewcontainer.innerHTML = ''
+        emptyhtml(this.viewcontainer)
         this.viewcontainer.appendChild(view.rootelement)
     }
 
