@@ -16,6 +16,14 @@ function initObjDef(_id,name,displayAttribute,):ObjDef{
     return {_id,name,displayAttribute,}
 }
 
+type Knot = {
+    _id:string
+    parent:string
+    objdef:string
+    data:string
+
+}
+
 type ObjDef = {
     _id:string,
     name:string,
