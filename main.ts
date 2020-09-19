@@ -1,4 +1,12 @@
 /// <reference path="./src/designer.ts" />
+//todo
+//save and load definition in database
+//use knots for contentree
+//implement knot/obj creation/deletion serverside
+//ui for allowednodes/chosing documenttype beneath node
+//filtering done via list of filters instead of columns
+
+
 
 let objectidcounter = 1
 let objectdefinition = initObjDef((objectidcounter++).toString(),'objdefinitions',null)

@@ -37,3 +37,8 @@ function emptyhtml(element:HTMLElement){
         element.removeChild(element.firstChild)
     }
 }
+
+function remove<T>(arr:T[],obj:T):T{
+    var index = arr.findIndex(o => o == obj)
+    return arr.splice(index,1)[0]
+}

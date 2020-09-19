@@ -18,6 +18,38 @@ function create(objname:string,data:any):Promise<string>{
     })
 }
 
+function createKnotAndObjectByName(designer:Designer,parentknot:string, objname:string,object:any){
+    var def = designer.definition.objdefinitions.find(od => od.name == objname)
+    return createKnotAndObject(def,parentknot,object)
+}
+
+function createKnotAndObject(objdef:ObjDef,parentknot:string,object:any):Promise<string>{
+    return new Promise((resolve,rej) => {
+        create(objdef.name,object).then(res => {
+            var knotdata:Knot = {
+                _id:'',
+                name:'generatedKnot',
+                parent:parentknot,
+                objid:res,
+                objdef:objdef._id,
+            }
+            create('knot', knotdata).then(e => {
+                resolve(e)
+            })    
+        })
+    })
+    
+}
+
+
+function getAll(objname:string){
+    return getList(objname,{dereferences:[],filter:{},paging:{
+        limit:0,
+        skip:0,
+    },
+    sort:{}})
+}
+
 function getList(objname:string,query:Query):Promise<QueryResult<any>>{
     return fetch(`/api/search/${objname}`,{
         headers:{
@@ -28,7 +60,7 @@ function getList(objname:string,query:Query):Promise<QueryResult<any>>{
     }).then(res => res.json())
 }
 
-function get(objname:string, id:string){
+function get(objname:string, id:string):Promise<any>{
     return new Promise((resolve,rej) => {
         getList(objname,{
             filter:{

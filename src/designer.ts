@@ -8,27 +8,43 @@
 /// <reference path="./views/table.ts" />
 /// <reference path="./router.ts" />
 /// <reference path="../node_modules/eventsystemx/EventSystem.ts" />
+/// <reference path="./views/contenttree.ts" />
+/// <reference path="./views/knotView.ts" />
+
 
 
 
 class Designer{
-   
+    propertyUseNameIdentifier = false
+    objUsenameIdentifier = false
+
     detailviews:DetailView[] = []
     listViews:ListView[] = []
+    contenttree:ContentTree
+
     router: Router
     navbarelement: HTMLElement
     viewcontainer: HTMLElement
+    contenttreeElement: HTMLElement
 
     constructor(public definition:AppDef,public rootElement:HTMLElement){
 
         this.rootElement.insertAdjacentHTML('beforeend',`
             <div>
                 <div id="navbar"></div>
-                <div id="viewcontainer"></div>
+                <div style="display:flex;">
+                    <div id="contenttree"></div>
+                    <div id="viewcontainer"></div>
+                </div>
             </div>
         `)
         this.navbarelement = this.rootElement.querySelector('#navbar')
         this.viewcontainer = this.rootElement.querySelector('#viewcontainer')
+        this.contenttreeElement = this.rootElement.querySelector('#contenttree')
+
+        this.contenttree = new ContentTree(this)
+        this.contenttree.reloadKnots()
+        this.contenttreeElement.appendChild(this.contenttree.rootElement)
 
         for(var obj of this.definition.objdefinitions){
             this.navbarelement.insertAdjacentHTML('beforeend',`<a style="margin:10px;" href="/${obj.name}">${obj.name}</a>`)

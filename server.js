@@ -4,7 +4,7 @@ let express = require("express")
 let bodyParser = require("body-parser")
 let path = require("path")
 
-let url = 'mongodb://localhost:27017';
+let url = 'mongodb+srv://admin:as@cluster0.bai64.gcp.mongodb.net/database1?retryWrites=true&w=majority';
 let databasename = 'company'
 let app = express();
 app.use(bodyParser.json());//for json encoded http body's

@@ -13,20 +13,27 @@ type AppDef = {
 }
 
 function initObjDef(_id,name,displayAttribute,):ObjDef{
-    return {_id,name,displayAttribute,}
+    return {_id,name,displayAttribute,allowAsRootnode:true}
 }
 
 type Knot = {
     _id:string
+    name:string
     parent:string
     objdef:string
-    data:string
+    objid:string
+}
 
+type ObjAllowChildren = {
+    _id:string,
+    objdefid:string,
+    objdefallowed:string,
 }
 
 type ObjDef = {
     _id:string,
     name:string,
+    allowAsRootnode:boolean
     displayAttribute:string,
 }
 

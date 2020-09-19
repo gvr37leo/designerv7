@@ -100,9 +100,9 @@ class DetailView{
         this.tabscontainer.appendChild(this.tabs.rootelement)
     }
 
-    mount(id:string){
+    async mount(id:string){
         this.tabs.mount(id)
-        get(this.definition.name,id).then(val => {
+        await get(this.definition.name,id).then(val => {
 
             for(let attribute of this.attributes){
                 let widget = this.widgets.get(attribute._id)
@@ -117,7 +117,7 @@ class DetailView{
             }
             this.onMountFinished.trigger(null)
         })
-
+        return 
         //hier
         // tabs overwrite filter
         
