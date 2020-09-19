@@ -5,6 +5,7 @@
 //implement knot/obj creation/deletion serverside
 //ui for allowednodes/chosing documenttype beneath node
 //filtering done via list of filters instead of columns
+//have a getIdentifyingProperty() method on objects and attributes
 
 
 
