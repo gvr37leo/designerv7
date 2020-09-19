@@ -1,6 +1,8 @@
 /// <reference path="./src/designer.ts" />
 //todo
 //save and load definition in database
+//have both meta and normal data loaded at the same time
+//eventqueue system maybe
 //use knots for contentree
 //implement knot/obj creation/deletion serverside
 //ui for allowednodes/chosing documenttype beneath node
